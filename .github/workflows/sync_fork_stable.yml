@@ -1,25 +1,60 @@
+# name: Sync Fork
+
+# on:
+#   workflow_dispatch:
+#   schedule:
+#   - cron:  '30 5,17 * * *'
+
+# jobs:
+#   sync:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v2
+
+#       - name: Sync and merge upstream repository with your current repository
+#         uses: dabreadman/sync-upstream-repo@v1.0.0.b
+#         with:
+#           # URL of gitHub public upstream repo
+#           upstream_repo: https://github.com/pybind/pybind11.git
+#           # Branch to merge from upstream (defaults to downstream branch)
+#           upstream_branch: stable
+#           # Branch to merge into downstream
+#           downstream_branch: stable
+#           # GitHub Bot token
+#           token: ${{ secrets.GITHUB_TOKEN }}
+
 name: Sync Fork
 
 on:
+  schedule:
+    - cron:  '0 7 * * 1,4'
+    # scheduled at 07:00 every Monday and Thursday
   workflow_dispatch:
-  schedule: 
-  - cron:  '30 5,17 * * *'
-  
+
 jobs:
-  sync:
+  sync_with_upstream:
     runs-on: ubuntu-latest
+    name: Sync stable with upstream latest
 
     steps:
-      - uses: actions/checkout@v2
-      
-      - name: Sync and merge upstream repository with your current repository
-        uses: dabreadman/sync-upstream-repo@v1.0.0.b
-        with:
-          # URL of gitHub public upstream repo
-          upstream_repo: https://github.com/pybind/pybind11.git
-          # Branch to merge from upstream (defaults to downstream branch)
-          upstream_branch: stable
-          # Branch to merge into downstream
-          downstream_branch: stable
-          # GitHub Bot token
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout stable
+      uses: actions/checkout@v2
+      with:
+        ref: master
+
+    - name: Pull upstream changes
+      id: sync
+      uses: aormsby/Fork-Sync-With-Upstream-action@v3.1
+      with:
+        target_sync_branch: stable
+        # REQUIRED 'target_repo_token' exactly like this!
+        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+        upstream_sync_branch: stable
+        upstream_sync_repo: pybind/pybind11
+
+        # Set test_mode true to run tests instead of the true action!!
+        test_mode: true
+
+    - name: Timestamp
+      run: date
