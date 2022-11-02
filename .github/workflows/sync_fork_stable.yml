@@ -3,7 +3,7 @@ name: Sync Stable
 on:
   schedule:
     # Triggers the workflow every day at 5:30 and 17:30 UTC
-    - cron:  '30 16 * * 0-6'
+    - cron:  '30 20 * * 0-6'
   workflow_dispatch:
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Checkout stable
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: master
 
