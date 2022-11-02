@@ -3,7 +3,7 @@ name: Sync Master
 on:
   schedule:
     # Triggers the workflow every day at 5:30 and 17:30 UTC
-    - cron:  '45 15 * * *'
+    - cron:  '55 21 * * 0-6'
   workflow_dispatch:
 
 jobs:
@@ -12,23 +12,23 @@ jobs:
     name: Sync stable with upstream latest
 
     steps:
-    - name: Checkout master
-      uses: actions/checkout@v2
+    - name: Checkout Master
+      uses: actions/checkout@v3
       with:
         ref: master
 
-    - name: Pull upstream changes
-      id: sync
-      uses: aormsby/Fork-Sync-With-Upstream-action@v3.1
-      with:
-        target_sync_branch: master
-        # REQUIRED 'target_repo_token' exactly like this!
-        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
-        upstream_sync_branch: master
-        upstream_sync_repo: pybind/pybind11
+    # - name: Pull upstream changes
+    #   id: sync
+    #   uses: aormsby/Fork-Sync-With-Upstream-action@v3.1
+    #   with:
+    #     target_sync_branch: stable
+    #     # REQUIRED 'target_repo_token' exactly like this!
+    #     target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+    #     upstream_sync_branch: stable
+    #     upstream_sync_repo: pybind/pybind11
 
-        # Set test_mode true to run tests instead of the true action!!
-        test_mode: true
+    #     # Set test_mode true to run tests instead of the true action!!
+    #     test_mode: true
 
     - name: Timestamp
       run: date
