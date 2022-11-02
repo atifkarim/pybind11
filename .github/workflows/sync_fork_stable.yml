@@ -3,7 +3,7 @@ name: Sync Stable
 on:
   schedule:
     # Triggers the workflow every day at 5:30 and 17:30 UTC
-    - cron:  '30 5,17 * * *'
+    - cron:  '57 15 * * *'
   workflow_dispatch:
 
 jobs:
@@ -17,18 +17,18 @@ jobs:
       with:
         ref: master
 
-    - name: Pull upstream changes
-      id: sync
-      uses: aormsby/Fork-Sync-With-Upstream-action@v3.1
-      with:
-        target_sync_branch: stable
-        # REQUIRED 'target_repo_token' exactly like this!
-        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
-        upstream_sync_branch: stable
-        upstream_sync_repo: pybind/pybind11
+    # - name: Pull upstream changes
+    #   id: sync
+    #   uses: aormsby/Fork-Sync-With-Upstream-action@v3.1
+    #   with:
+    #     target_sync_branch: stable
+    #     # REQUIRED 'target_repo_token' exactly like this!
+    #     target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+    #     upstream_sync_branch: stable
+    #     upstream_sync_repo: pybind/pybind11
 
-        # Set test_mode true to run tests instead of the true action!!
-        test_mode: true
+    #     # Set test_mode true to run tests instead of the true action!!
+    #     test_mode: true
 
     - name: Timestamp
       run: date
