@@ -13,28 +13,36 @@ on:
 jobs:
   sync_with_upstream:
     runs-on: ubuntu-latest
-    name: Sync stable with upstream latest
+    name: Sync master with upstream latest
 
     steps:
     - name: Checkout Master
       uses: actions/checkout@v3
       with:
         ref: master
-        ssh-key: ${{ secrets.CMU_DELPHI_DEPLOY_MACHINE_SSH }}
-        fetch-depth: 5
 
+    # - name: Pull upstream changes
+    #   id: sync
+    #   uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+    #   with:
+    #     target_sync_branch: master
+    #     # REQUIRED 'target_repo_token' exactly like this!
+    #     target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+    #     upstream_sync_branch: master
+    #     upstream_sync_repo: pybind/pybind11
+
+    #     # Set test_mode true to run tests instead of the true action!!
+    #     test_mode: false
+
+    # Step 2: run this sync action - specify the upstream repo, upstream branch to sync with, and target sync branch
     - name: Pull upstream changes
       id: sync
-      uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+      uses: bdougie/Fork-Sync-With-Upstream-action@fork
       with:
-        target_sync_branch: master
-        # REQUIRED 'target_repo_token' exactly like this!
-        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
-        upstream_sync_branch: master
-        upstream_sync_repo: pybind/pybind11
-
-        # Set test_mode true to run tests instead of the true action!!
-        test_mode: false
+        upstream_repository: pybind/pybind11
+        upstream_branch: master
+        target_branch: master                       # optional
+        github_token: ${{ secrets.GITHUB_TOKEN }}   # optional, for accessing repos that require authentication
 
     - name: Timestamp
       run: date
