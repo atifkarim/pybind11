@@ -1,6 +1,10 @@
 name: Sync Master
 
 on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
   schedule:
     # Triggers the workflow every day at 23:30 UTC
     - cron:  '30 23 * * *'
