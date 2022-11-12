@@ -20,7 +20,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         ref: master
-        token: ${{ secrets.SYNC_FORK_PYBIND11 }}
+        token: ${{ secrets.SYNC_FORK }}
 
     - name: Pull upstream changes
       id: sync
@@ -28,7 +28,7 @@ jobs:
       with:
         target_sync_branch: master
         # REQUIRED 'target_repo_token' exactly like this!
-        target_repo_token: ${{ secrets.SYNC_FORK_PYBIND11 }}
+        target_repo_token: ${{ secrets.SYNC_FORK }}
         upstream_sync_branch: master
         upstream_sync_repo: pybind/pybind11
 
