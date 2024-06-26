@@ -80,6 +80,24 @@ class Optional : public object {
     using object::object;
 };
 
+template <typename T>
+class TypeGuard : public bool_ {
+    using bool_::bool_;
+};
+
+template <typename T>
+class TypeIs : public bool_ {
+    using bool_::bool_;
+};
+
+class NoReturn : public none {
+    using none::none;
+};
+
+class Never : public none {
+    using none::none;
+};
+
 #if defined(__cpp_nontype_template_parameter_class)
 template <size_t N>
 struct StringLiteral {
@@ -159,6 +177,14 @@ struct handle_type_name<typing::Callable<Return(Args...)>> {
           + const_name("], ") + make_caster<retval_type>::name + const_name("]");
 };
 
+template <typename Return>
+struct handle_type_name<typing::Callable<Return(ellipsis)>> {
+    // PEP 484 specifies this syntax for defining only return types of callables
+    using retval_type = conditional_t<std::is_same<Return, void>::value, void_type, Return>;
+    static constexpr auto name
+        = const_name("Callable[..., ") + make_caster<retval_type>::name + const_name("]");
+};
+
 template <typename T>
 struct handle_type_name<typing::Type<T>> {
     static constexpr auto name = const_name("type[") + make_caster<T>::name + const_name("]");
@@ -174,6 +200,26 @@ struct handle_type_name<typing::Union<Types...>> {
 template <typename T>
 struct handle_type_name<typing::Optional<T>> {
     static constexpr auto name = const_name("Optional[") + make_caster<T>::name + const_name("]");
+};
+
+template <typename T>
+struct handle_type_name<typing::TypeGuard<T>> {
+    static constexpr auto name = const_name("TypeGuard[") + make_caster<T>::name + const_name("]");
+};
+
+template <typename T>
+struct handle_type_name<typing::TypeIs<T>> {
+    static constexpr auto name = const_name("TypeIs[") + make_caster<T>::name + const_name("]");
+};
+
+template <>
+struct handle_type_name<typing::NoReturn> {
+    static constexpr auto name = const_name("NoReturn");
+};
+
+template <>
+struct handle_type_name<typing::Never> {
+    static constexpr auto name = const_name("Never");
 };
 
 #if defined(__cpp_nontype_template_parameter_class)
